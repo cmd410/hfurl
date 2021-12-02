@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "hfurl"
+version = "0.1.0"
+description = "Human-friendly URL parsing in python"
+authors = ["Crystal Melting Dot <stresspassing@gmail.com>"]
+repository = 'https://github.com/cmd410/hfurl'
+keywords = ["url", "parse"]
+readme = "README.md"
+license = "LGPL-2.1-only"
+
+[tool.poetry.dependencies]
+python = "^3.8"
+
+[tool.poetry.dev-dependencies]
+pytest = "^5.2"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
