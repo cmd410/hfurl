@@ -2,11 +2,11 @@ from itertools import product
 
 import pytest
 
-from hfurl import __version__, URLParseResult, parse_url, _DEFAULT_PORTS
+from hfurl import __version__, URLParseResult, parse_url, _DEFAULT_PORTS, UnknownScheme
 
 
 def test_version():
-    assert __version__ == '0.1.0'
+    assert __version__ == '0.2.0'
 
 
 def generate_url():
@@ -61,4 +61,8 @@ def generate_url():
 
 @pytest.mark.parametrize("url,expected", generate_url())
 def test_url(url, expected):
-    assert parse_url(url, 'https') == expected
+    try:
+        res = parse_url(url)
+        assert res == expected
+    except UnknownScheme:
+        assert url.startswith('scheme://')

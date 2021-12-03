@@ -1,7 +1,7 @@
-__version__ = '0.1.0'
+__version__ = '0.2.0'
 
 from collections import namedtuple
-from typing import NamedTuple
+from typing import NamedTuple, Optional
 from functools import cache
 
 
@@ -13,6 +13,7 @@ class InvalidURL(Exception):
 
 class NoHost(InvalidURL): pass
 class CredentialsError(InvalidURL): pass
+class UnknownScheme(InvalidURL): pass
 
 
 _DEFAULT_PORTS = {
@@ -60,12 +61,22 @@ class URLParseResult(NamedTuple):
         return url
 
 
-def parse_url(url: str, default_scheme: str = 'https') -> url_parse_result:
+def parse_url(url: str,
+              default_scheme: str = 'https',
+              schemes: Optional[dict] = None,
+              validate_scheme: bool = True
+              ) -> url_parse_result:
     """Parses given url, returns namedtuple of
     (scheme, host, path, port, username, password)
 
     Whenever possible it will try to deduce port from
     given schema, if no port explicitly specified.
+    
+    Params:
+    url - url to parse
+    default_scheme - scheme to fallback to if none in url
+    schemes - a mapping of scheme: default_port
+    validate_scheme - if True, checks scheme against given schemes or predefined protocols in the module 
 
     Raises one of
         - InvalidURL - generic url format error(base class for others)
@@ -82,7 +93,10 @@ def parse_url(url: str, default_scheme: str = 'https') -> url_parse_result:
         host = url
 
     # Assume port based on scheme
-    port = _DEFAULT_PORTS.get(scheme, -1)
+    scheme_set = schemes or _DEFAULT_PORTS
+    port = scheme_set.get(scheme, -1)
+    if validate_scheme and port == -1:
+        raise UnknownScheme(f"unknown scheme: {scheme!r}, expected one of {scheme_set}")
 
     if not host:
         raise NoHost(url)
