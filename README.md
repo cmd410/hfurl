@@ -1,6 +1,6 @@
 <h1>HFURL - Human-friendly URL</h1>
 
-This is a tiny python library taht provides parsing for human-firendly.
+This is a tiny python library that provides parsing for human-firendly.
 Completely disregarding RFC it correctly parses url with no schema
 (eg. `example.com` is equivalent to `https://example.com/`).
 
